@@ -11,6 +11,8 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 # Global dependencies
 RUN apt-get -q update \
+    && apt install python-is-python3 -y
+RUN apt-get -q update \
  && apt-get -q install -y --no-install-recommends apt-utils \
  && apt-get -q install -y --no-install-recommends --allow-downgrades \
  ca-certificates \
@@ -27,7 +29,6 @@ RUN apt-get -q update \
  libxss1 \
  cpio \
  lsb-release \
- python \
  python-setuptools \
  xvfb \
  xz-utils \
@@ -50,15 +51,6 @@ RUN apt-get -q update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-# libstdc++6 upgrade
-RUN apt-get -q update \
- && apt-get -q install -y --no-install-recommends software-properties-common \
- && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
- && apt-get -q install -y --only-upgrade libstdc++6 \
- && add-apt-repository -y --remove ppa:ubuntu-toolchain-r/test \
- && apt-get -q remove -y --auto-remove software-properties-common \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
 
 # Disable default sound card, which removes ALSA warnings
 RUN /bin/echo -e 'pcm.!default {\n\
